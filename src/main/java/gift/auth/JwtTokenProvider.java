@@ -2,9 +2,12 @@ package gift.auth;
 
 import gift.model.Member;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Jwts.SIG;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,6 +35,7 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
             .claim("member_id", member.getId())
+            .claim("member_role", member.getRole())
             .issuedAt(new Date(System.currentTimeMillis()))
             .expiration(new Date(System.currentTimeMillis() + expirationInSeconds))
             .signWith(secretKey, SIG.HS512)
@@ -46,9 +50,15 @@ public class JwtTokenProvider {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-        } catch (JwtException e) {
-            return null;
-        }
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            System.out.println("잘못된 JWT 토큰 서명"); }
+        catch (ExpiredJwtException e) {
+            System.out.println("만료된 JWT 토큰"); }
+        catch (UnsupportedJwtException e) {
+            System.out.println("지원하지 않는 JWT 토큰"); }
+        catch (IllegalArgumentException e) {
+            System.out.println("잘못된 JWT 토큰"); }
+        return null;
     }
 
     public String extractJwtTokenFromHeader(HttpServletRequest request) {
