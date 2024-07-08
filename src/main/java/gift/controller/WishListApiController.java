@@ -45,7 +45,7 @@ public class WishListApiController {
 
     @CheckRole("ROLE_USER")
     @PostMapping("/api/wishlist")
-    public ResponseEntity<Product> addWishList(@LoginMember LoginMemberDto memberDto,
+    public ResponseEntity<Void> addWishList(@LoginMember LoginMemberDto memberDto,
         @RequestBody @Valid WishListRequest dto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new InputException(bindingResult.getAllErrors());
@@ -58,7 +58,7 @@ public class WishListApiController {
 
     @CheckRole("ROLE_USER")
     @DeleteMapping("/api/wishlist")
-    public ResponseEntity<Product> deleteWishList(@LoginMember LoginMemberDto memberDto,
+    public ResponseEntity<Void> deleteWishList(@LoginMember LoginMemberDto memberDto,
         @RequestBody @Valid WishListRequest dto, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
