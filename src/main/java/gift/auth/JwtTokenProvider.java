@@ -23,6 +23,8 @@ public class JwtTokenProvider {
 
     private final SecretKey secretKey;
     private final Long expirationInSeconds;
+    private static final String TOKEN_PREFIX = "Bearer ";
+    private static final int BEGIN_INDEX = 7;
 
     public JwtTokenProvider(
         @Value("${jwt.secret}") String secretString,
@@ -64,8 +66,8 @@ public class JwtTokenProvider {
     public String extractJwtTokenFromHeader(HttpServletRequest request) {
         String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
+        if (bearerToken != null && bearerToken.startsWith(TOKEN_PREFIX)) {
+            return bearerToken.substring(BEGIN_INDEX);
         }
 
         return null;
